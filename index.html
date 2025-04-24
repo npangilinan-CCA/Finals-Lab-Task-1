@@ -59,23 +59,20 @@
             overflow-x: hidden;
         }
 
-        /* Enhanced Title Styles */
+       /* Enhanced Title Styles */
         .title-container {
             position: relative;
             text-align: center;
             margin-bottom: 3rem;
             padding: 2rem;
-            perspective: 1000px;
         }
 
-        .main-title, .subtitle {
+        .main-title {
+            position: relative;
+            display: inline-block;
             font-family: 'UnifrakturCook', cursive;
-            text-align: center;
-            background: linear-gradient(45deg, 
-                #c0c0c0, #ffffff, #808080,
-                #c0c0c0, #ffffff, #808080
-            ) !important;
-            background-size: 200% 200% !important;
+            font-size: 3rem !important;
+            background: linear-gradient(45deg, #c0c0c0, #ffffff, #808080) !important;
             -webkit-background-clip: text !important;
             background-clip: text !important;
             -webkit-text-fill-color: transparent !important;
@@ -83,60 +80,77 @@
             padding: 1rem !important;
             margin: 0 !important;
             cursor: pointer;
-            position: relative;
-            animation: shimmer 3s infinite;
+        }
+
+        .main-title::before,
+        .main-title::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent,
+                #FFB6C1, #4169E1, #FFD700, #FF0000, #00FF00,
+                transparent
+            );
+            transition: width 0.5s ease;
+        }
+
+        .main-title::before {
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+
+        .main-title::after {
+            right: 50%;
+            bottom: 0;
+            transform: translateX(50%);
+        }
+
+        .title-container:hover .main-title::before,
+        .title-container:hover .main-title::after {
+            width: 100%;
+        }
+
+        .title-container:hover .main-title {
             text-shadow: 
-                0 0 10px rgba(255,255,255,0.2),
-                0 0 20px rgba(255,255,255,0.1),
-                0 0 30px rgba(255,255,255,0.1);
-        }
-
-        .main-title {
-            font-size: 3.5rem;
+                0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.1);
             letter-spacing: 2px;
-        }
-
-        .subtitle {
-            font-size: 2.5rem;
-            margin-top: 1rem;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            transform: scale(1.05);
         }
 
         .title-container::before,
         .title-container::after {
-            content: '♱';
+            content: '';
             position: absolute;
             top: 50%;
-            font-size: 2rem;
-            color: var(--chrome-silver);
-            opacity: 0;
-            transition: all 0.5s ease;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom,
+                transparent,
+                var(--chrome-silver),
+                transparent
+            );
+            transition: height 0.3s ease;
         }
 
         .title-container::before {
             left: 0;
-            transform: translateX(-100%) translateY(-50%);
         }
 
         .title-container::after {
             right: 0;
-            transform: translateX(100%) translateY(-50%);
         }
 
-        .title-container:hover::before {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-50%);
-        }
-
+        .title-container:hover::before,
         .title-container:hover::after {
-            opacity: 1;
-            transform: translateX(50%) translateY(-50%);
+            height: 80%;
+            transform: translateY(-50%);
         }
+        
                 /* Loading Screen Styles */
         .loading-screen {
             position: fixed;
@@ -508,7 +522,7 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
-            <div class="loading-logo">Loading</div>
+            <div class="loading-logo">Finals Lab Task 1</div>
             <div class="loading-cross">♱</div>
             <div class="loading-bar-container">
                 <div class="loading-bar"></div>
@@ -519,8 +533,7 @@
 
     <div class="container">
         <div class="title-container">
-            <div class="main-title">Finals Lab Task 1</div>
-            <div class="subtitle">Creating a Database using MySQL Workbench</div>
+            <div class="main-title">Finals Lab Task 1 - Creating a Database using MySQL Workbench</div>
         </div>
                 <p class="description">
             This portfolio is about learning MySQL basics through a multi-level company database. It includes tasks like writing SQL queries, creating table structures, and making an EER diagram or relational schema. The portfolio will also include SQL copies of the database and table structures to show how the database is built.
@@ -710,30 +723,25 @@
                 }, 500);
             }, 2000);
 
-            // Enhanced title interaction
-            const titleContainer = document.querySelector('.title-container');
-            const mainTitle = document.querySelector('.main-title');
-            const subtitle = document.querySelector('.subtitle');
+           // Title interaction effect
+        document.querySelector('.main-title').addEventListener('mousemove', (e) => {
+            const title = e.target;
+            const rect = title.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const angleX = (y - centerY) / 10;
+            const angleY = (centerX - x) / 10;
+            
+            title.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.05)`;
+        });
 
-            titleContainer.addEventListener('mousemove', (e) => {
-                const rect = titleContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const angleX = (y - centerY) / 20;
-                const angleY = (centerX - x) / 20;
-                
-                mainTitle.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.1)`;
-                subtitle.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.05)`;
-            });
-
-            titleContainer.addEventListener('mouseleave', () => {
-                mainTitle.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-                subtitle.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-            });
+        document.querySelector('.main-title').addEventListener('mouseleave', (e) => {
+            e.target.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
 
             // Enhanced floating crosses
             function createColoredCross() {
